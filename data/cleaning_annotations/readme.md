@@ -1,0 +1,5 @@
+We include our annotations on the potential OOD classes from [Species](https://github.com/hendrycks/anomaly-seg), [Food-101](https://www.kaggle.com/datasets/dansbecker/food-101), [Places365](https://github.com/CSAILVision/places365) via [MOS](https://github.com/deeplearning-wisc/large_scale_ood) and [iNaturalist](https://www.inaturalist.org/) via [download lists](data/iNaturalist_download_lists).
+
+Also included are annotations on subsamples of the OOD test datasets [iNaturalist Plants, Textures and Places obtained from MOS](https://github.com/deeplearning-wisc/large_scale_ood), [ImageNet-O](https://github.com/hendrycks/natural-adv-examples), [Species](https://github.com/hendrycks/anomaly-seg) and [OpenImage-O](https://ooddetection.github.io/).
+
+To compare the annotations with the images, please download the dataset from the given source and view the files given in our respective annotation table.

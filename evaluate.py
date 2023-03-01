@@ -54,7 +54,15 @@ class OOD_Score:
         if os.path.exists(path):
             for source in sources:
                 print('checking ', source)
-                names = sorted([f for f in os.listdir(path) if source in f])
+                # names = []
+                # for i in range(10000):
+                #     potential_save = f'{source}_{i}.npy'
+                #     if potential_save in os.listdir(path):
+                #         names.append(potential_save)
+                #     else:
+                #         break
+                names = sorted([f for f in os.listdir(path) if f.startswith(source+'_') and f.endswith('.npy')
+                                and f[len(source+'_'):-len('.npy')].isdigit()])
                 if len(names)==0:
                     print('No samples in {}'.format(path))
                     return False
@@ -64,9 +72,8 @@ class OOD_Score:
                 else:
                     if len(predictions[source]) != expected_samples:
                         print('There should be {} train samples of {} in {}, but there are {}'.format(expected_samples, source, path,
-                                                                                                                  len(
-                                                                                                                 predictions[
-                                                                                                                          source])))
+                                                                                                        len(predictions[source])))
+                        
                         return False
         return predictions
 

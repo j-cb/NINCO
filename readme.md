@@ -3,7 +3,7 @@
 # "In or Out? Fixing ImageNet Out-of-Distribution Detection Evaluation"
 
 This repository contains the evaluation pipeline for obtaining the results in the paper.
-It was tested with the python package versions that are installed via `pip install -r requirements.txt`
+It was tested with the python package versions that are installed via `pip install -r requirements.txt`.
 
 Five jupyter notebooks can in the current version be used as tutorials for the repo's functionalities.
 

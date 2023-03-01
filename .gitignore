@@ -1,6 +1,6 @@
 **/__pycache__
 *.ipynb_checkpoints
-data/paths_config.py #a generic example can be included on github
+data/paths_config.py
 data/cleaning_annotations/anonymize_annotations.ipynb
 data/cleaning_annotations/handmade_annotations
 data/cleaning_annotations/subsampled_dataset_annotations
@@ -10,3 +10,4 @@ analyze_evaluations_local.ipynb
 NINCO_images.tar.gz
 plots_in_or_out_paper_local.ipynb
 model_weights/checkpoints
+readme_public.md

@@ -8,7 +8,7 @@ from scipy.special import softmax
 from torch.utils.data.dataset import Dataset
 from timm.data import resolve_data_config
 from timm.data.transforms_factory import create_transform
-from utils import extract_features, extract_clip_embeddings, timm_models, models_clip, fpr_at_tpr, auroc_ood
+from utils import extract_features, extract_clip_embeddings, timm_models, models_clip, fpr_at_tpr, auroc_ood, models_timm_dev, models_timm_0_6_12
 import utils
 import data.paths_config
 from detection_methods import *
@@ -22,7 +22,7 @@ class OOD_Score:
         self.path_to_imagenet = path_to_imagenet
         self.clip_quantile = 0.99
         self.methods = ['MSP', 'MaxLogit', 'ViM', 'Mahalanobis', 'Energy+React',
-                        'Energy', 'KL-Matching', 'knn', 'Relative Mahalanobis','mcm', 'cosine']
+                        'Energy', 'KL-Matching', 'knn', 'Relative_Mahalanobis','mcm', 'cosine']
         self.clip_transform=None
         self.val_acc=-99
         self.train_acc=-99
@@ -206,9 +206,9 @@ class OOD_Score:
 
     def evaluate(self, model, OOD_classes, methods=['MSP']):
         # patly adapted from https://github.com/haoqiwang/vim/blob/master/benchmark.py
-        # path = os.path.join(self.path_to_cache, 'cache_methods', model.model_name)
-        # if not os.path.exists(path):
-        #     os.makedirs(path)
+        path = os.path.join(self.path_to_cache, 'cache_methods', model.model_name)
+        if not os.path.exists(path):
+            os.makedirs(path)
         methods_results = {}
         for method in methods:
             if method == 'MSP':
@@ -221,7 +221,7 @@ class OOD_Score:
                 scores_id, scores_ood = evaluate_ViM(feature_id_train = self.feature_id_train, feature_id_val = self.feature_id_val, feature_ood = self.feature_ood, logits_id_train = self.logits_id_train, logits_id_val = self.logits_id_val, logits_ood = self.logits_ood, u = self.u, path = path)
             elif method == 'Mahalanobis':
                 scores_id, scores_ood = evaluate_Mahalanobis(feature_id_train = self.feature_id_train, feature_id_val = self.feature_id_val, feature_ood = self.feature_ood, train_labels = self.train_labels, path = path)
-            elif method == 'Relative Mahalanobis':
+            elif method == 'Relative_Mahalanobis':
                 scores_id, scores_ood = evaluate_Relative_Mahalanobis(feature_id_train = self.feature_id_train, feature_id_val = self.feature_id_val, feature_ood = self.feature_ood, train_labels = self.train_labels, path = path)
             elif method == 'KL-Matching':
                 scores_id, scores_ood = evaluate_KL_Matching(softmax_id_train = self.softmax_id_train, softmax_id_val = self.softmax_id_val, softmax_ood = self.softmax_ood, path = path)
@@ -272,7 +272,7 @@ methods_train_usage = {
             'mcm-clip': False,
             'ViM': True,
             'Mahalanobis': True,
-            'Relative Mahalanobis': True,
+            'Relative_Mahalanobis': True,
             'KL-Matching': True,
             'Energy+React': True,
             'knn': True,
@@ -299,34 +299,41 @@ def main():
     methods = task.methods if args.method == 'all' else [args.method]
     need_train_outputs = any([methods_train_usage[m] for m in methods]) #raises KeyError if a method is not available
     # timm models
-    if args.model_name in timm_models.keys():
-        model = timm.create_model(**timm_models[args.model_name]['config']).cuda().eval()
-        model.model_name = args.model_name
-        model.batch_size = args.batch_size
-        print('Created model {}.'.format(model.model_name))
-        task.setup(args.dataset, model, clip_model=False)
-        print('Task is set up.')
-        task.get_features_and_logits(model, ood=True, train=need_train_outputs, overwrite=args.overwrite_model_outputs)
-        task.evaluate(model, OOD_classes=OOD_classes, methods=methods)
-    # CLIP zero shot models
-    elif args.model_name in models_clip.keys():
-        raise NotImplementedError('Updated CLIP evaluation code will be prodvided soon.')
-        # methods = task.methods if args.method == 'all' else [args.method]
-        # model, preprocess = clip.load(models_clip[args.model_name], 'cuda', download_root = args.path_to_weights)
-        # task.clip_transform = preprocess
-        # model.model_name = args.model_name
-        # model.batch_size = args.batch_size
-        # print('Created model {}.'.format(model.model_name))
-        # for i, dataset in enumerate(datasets):
-        #     task.setup(model, dataset = dataset, clip_model = True)
-        #     print('Task is set up.')
-        #     task.get_features_clip(model, val = not i, train=need_train_outputs, ood = True, overwrite=args.overwrite_model_outputs)
-        #     for method in methods:
-        #         print('Getting {} scores...'.format(method))
-        #         task.evaluate(model, method = method)
+    if args.model_name=='models_timm_dev':
+        model_names=models_timm_dev
+    elif args.model_name=='models_timm_0_6_12':
+        model_names=models_timm_0_6_12
     else:
-        raise NotImplementedError(
-            '{} is not implemented. Please add it to the model-dictionary.'.format(args.model_name))
+        model_names=[args.model_name]
+    for model_name in model_names:
+        if model_name in timm_models.keys():
+            model = timm.create_model(**timm_models[model_name]['config']).cuda().eval()
+            model.model_name = model_name
+            model.batch_size = args.batch_size
+            print('Created model {}.'.format(model.model_name))
+            task.setup(args.dataset, model, clip_model=False)
+            print('Task is set up.')
+            task.get_features_and_logits(model, ood=True, train=need_train_outputs, overwrite=args.overwrite_model_outputs)
+            task.evaluate(model, OOD_classes=OOD_classes, methods=methods)
+        # CLIP zero shot models
+        elif model_name in models_clip.keys():
+            raise NotImplementedError('Updated CLIP evaluation code will be prodvided soon.')
+            # methods = task.methods if args.method == 'all' else [args.method]
+            # model, preprocess = clip.load(models_clip[model_name], 'cuda', download_root = args.path_to_weights)
+            # task.clip_transform = preprocess
+            # model.model_name = model_name
+            # model.batch_size = args.batch_size
+            # print('Created model {}.'.format(model.model_name))
+            # for i, dataset in enumerate(datasets):
+            #     task.setup(model, dataset = dataset, clip_model = True)
+            #     print('Task is set up.')
+            #     task.get_features_clip(model, val = not i, train=need_train_outputs, ood = True, overwrite=args.overwrite_model_outputs)
+            #     for method in methods:
+            #         print('Getting {} scores...'.format(method))
+            #         task.evaluate(model, method = method)
+        else:
+            raise NotImplementedError(
+                '{} is not implemented. Please add it to the model-dictionary.'.format(model_name))
 
 
 if __name__=="__main__":

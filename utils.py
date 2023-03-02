@@ -69,10 +69,10 @@ NINCO_popular_datasets_subsamples_class_names = [
                                         'Textures'
                                         ]
 
-models_timm_dev=['vit_base_patch16_384_laion2b_in21k_in1k',
+models_timm_dev=['vit_base_patch16_384_laion2b_in12k_in1k',
                  'vit_base_patch16_384_laion2b_in1k',
                  'vit_base_patch16_384_openai_in1k',
-                 'vit_base_patch16_384_openai_in21k_in1k',
+                 'vit_base_patch16_384_openai_in12k_in1k',
                  'vit_base_patch16_384',
                  'xcit_medium_24_p16_224_dist',
                  'xcit_medium_24_p16_224']
@@ -111,7 +111,8 @@ def extract_features(model, dataset_in_train, savepath, wo_head=False):
 
 
         # if not, save create dataloader and save features
-        if True: #not complete:
+        #if True: #not complete:
+        if not complete:
             print('Extracting features set ',i)
             index_slices[i] = range(i * slice_length, min((i + 1) * slice_length, len(dataset_in_train)))
             slice_datasets[i] = torch.utils.data.Subset(dataset_in_train, index_slices[i])

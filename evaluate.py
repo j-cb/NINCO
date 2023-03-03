@@ -319,18 +319,16 @@ def main():
         elif model_name in models_clip.keys():
             raise NotImplementedError('Updated CLIP evaluation code will be prodvided soon.')
             # methods = task.methods if args.method == 'all' else [args.method]
-            # model, preprocess = clip.load(models_clip[model_name], 'cuda', download_root = args.path_to_weights)
-            # task.clip_transform = preprocess
-            # model.model_name = model_name
-            # model.batch_size = args.batch_size
-            # print('Created model {}.'.format(model.model_name))
+            model, preprocess = clip.load(models_clip[model_name], 'cuda', download_root = args.path_to_weights)
+            task.clip_transform = preprocess
+            model.model_name = model_name
+            model.batch_size = args.batch_size
+            print('Created model {}.'.format(model.model_name))
             # for i, dataset in enumerate(datasets):
-            #     task.setup(model, dataset = dataset, clip_model = True)
-            #     print('Task is set up.')
-            #     task.get_features_clip(model, val = not i, train=need_train_outputs, ood = True, overwrite=args.overwrite_model_outputs)
-            #     for method in methods:
-            #         print('Getting {} scores...'.format(method))
-            #         task.evaluate(model, method = method)
+            task.setup(args.dataset, model, clip_model=True)
+            print('Task is set up.')
+            task.get_features_clip(model, ood=True, val=True, train=need_train_outputs, overwrite=args.overwrite_model_outputs)
+            task.evaluate(model, OOD_classes=OOD_classes, methods=methods)
         else:
             raise NotImplementedError(
                 '{} is not implemented. Please add it to the model-dictionary.'.format(model_name))

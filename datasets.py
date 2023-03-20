@@ -62,7 +62,7 @@ class ImageCSVDataset(ImageDictDataset):
     def __init__(
         self,
         image_table_csv: str,
-        paths_prefix: str = '',
+        paths_prefix: str = paths_config.dset_location_dict['NINCO'],
         name=None,
         transform: Optional[Callable] = None,
         target_transform: Optional[Callable] = None,

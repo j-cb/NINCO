@@ -14,3 +14,6 @@ model_weights/checkpoints
 nohup.out
 cache/**/*.index
 readme_public.md
+analyze_evaluations-max.ipynb
+.idea/
+model_weights/

@@ -10,8 +10,10 @@ import torch.nn.functional as F
 from itertools import groupby
 import faiss
 
+
 def kl(p, q):
     return np.sum(np.where(p != 0, p * np.log(p / q), 0))
+
 
 def all_equal(iterable):
     g = groupby(iterable)
@@ -32,8 +34,8 @@ def evaluate_MSP(softmax_id_val, softmax_ood):
         score_id: Numpy array of shape (m,), representing the maximum softmax probability of m data points from in-distribution.
         score_ood: Numpy array of shape (p,), representing the maximum softmax probability of p data points from out-of-distribution.
         """
-    score_id = softmax_id_val.max(axis = -1)
-    score_ood = softmax_ood.max(axis = -1)
+    score_id = softmax_id_val.max(axis=-1)
+    score_ood = softmax_ood.max(axis=-1)
     return score_id, score_ood
 
 
@@ -47,9 +49,10 @@ def evaluate_MaxLogit(logits_in_distribution, logits_out_of_distribution):
     Returns:
         tuple: Tuple of the maximum logit value for both in- and out-of-distribution data.
     """
-    score_in_distribution = logits_in_distribution.max(axis = -1)
-    score_out_of_distribution = logits_out_of_distribution.max(axis = -1)
+    score_in_distribution = logits_in_distribution.max(axis=-1)
+    score_out_of_distribution = logits_out_of_distribution.max(axis=-1)
     return score_in_distribution, score_out_of_distribution
+
 
 def evaluate_Energy(logits_in_distribution, logits_out_of_distribution):
     """Compute the energy value for both in- and out-of-distribution data.
@@ -64,6 +67,7 @@ def evaluate_Energy(logits_in_distribution, logits_out_of_distribution):
     score_in_distribution = logsumexp(logits_in_distribution, axis=1)
     score_out_of_distribution = logsumexp(logits_out_of_distribution, axis=1)
     return score_in_distribution, score_out_of_distribution
+
 
 def evaluate_ViM(feature_id_train, feature_id_val, feature_ood, logits_id_train, logits_id_val, logits_ood, u, path):
     """
@@ -95,7 +99,7 @@ def evaluate_ViM(feature_id_train, feature_id_val, feature_ood, logits_id_train,
         NS = np.load(NS_path)
     else:
         print('NS not stored, computing principal space...')
-        ec = EmpiricalCovariance(assume_centered = True)
+        ec = EmpiricalCovariance(assume_centered=True)
         ec.fit(feature_id_train - u)
         eig_vals, eigen_vectors = np.linalg.eig(ec.covariance_)
         NS = np.ascontiguousarray((eigen_vectors.T[np.argsort(eig_vals * -1)[DIM:]]).T)
@@ -104,17 +108,17 @@ def evaluate_ViM(feature_id_train, feature_id_val, feature_ood, logits_id_train,
         alpha = np.load(alpha_path)
     else:
         print('alpha not stored, computing alpha...')
-        vlogit_id_train = norm(np.matmul(feature_id_train - u, NS), axis = -1)
-        alpha = logits_id_train.max(axis = -1).mean() / vlogit_id_train.mean()
+        vlogit_id_train = norm(np.matmul(feature_id_train - u, NS), axis=-1)
+        alpha = logits_id_train.max(axis=-1).mean() / vlogit_id_train.mean()
         np.save(alpha_path, alpha)
     print(f'{alpha=:.4f}')
 
-    vlogit_id_val = norm(np.matmul(feature_id_val - u, NS), axis = -1) * alpha
-    energy_id_val = logsumexp(logits_id_val, axis = -1)
+    vlogit_id_val = norm(np.matmul(feature_id_val - u, NS), axis=-1) * alpha
+    energy_id_val = logsumexp(logits_id_val, axis=-1)
     score_id = -vlogit_id_val + energy_id_val
 
-    energy_ood = logsumexp(logits_ood, axis = -1)
-    vlogit_ood = norm(np.matmul(feature_ood - u, NS), axis = -1) * alpha
+    energy_ood = logsumexp(logits_ood, axis=-1)
+    vlogit_ood = norm(np.matmul(feature_ood - u, NS), axis=-1) * alpha
     score_ood = -vlogit_ood + energy_ood
     return score_id, score_ood
 
@@ -152,12 +156,12 @@ def evaluate_Mahalanobis(feature_id_train, feature_id_val, feature_ood, train_la
         train_feat_centered = []
         for i in tqdm(range(1000)):
             fs = feature_id_train[train_labels == i]
-            _m = fs.mean(axis = 0)
+            _m = fs.mean(axis=0)
             train_means.append(_m)
             train_feat_centered.extend(fs - _m)
 
         print('computing precision matrix...')
-        ec = EmpiricalCovariance(assume_centered = True)
+        ec = EmpiricalCovariance(assume_centered=True)
         ec.fit(np.array(train_feat_centered).astype(np.float64))
 
         mean = np.array(train_means)
@@ -172,11 +176,11 @@ def evaluate_Mahalanobis(feature_id_train, feature_id_val, feature_ood, train_la
     if os.path.exists(score_id_path):
         score_id = np.load(score_id_path)
     else:
-        score_id = -np.array([(((f - mean) @ prec) * (f - mean)).sum(axis = -1).min().cpu().item() for f in
+        score_id = -np.array([(((f - mean) @ prec) * (f - mean)).sum(axis=-1).min().cpu().item() for f in
                               tqdm(torch.from_numpy(feature_id_val).cuda().double())])
         np.save(score_id_path, score_id)
 
-    score_ood = -np.array([(((f - mean) @ prec) * (f - mean)).sum(axis = -1).min().cpu().item() for f in
+    score_ood = -np.array([(((f - mean) @ prec) * (f - mean)).sum(axis=-1).min().cpu().item() for f in
                            tqdm(torch.from_numpy(feature_ood).cuda().double())])
     return score_id, score_ood
 
@@ -220,12 +224,12 @@ def evaluate_Relative_Mahalanobis(feature_id_train, feature_id_val, feature_ood,
         train_feat_centered = []
         for i in tqdm(range(1000)):
             fs = feature_id_train[train_labels == i]
-            _m = fs.mean(axis = 0)
+            _m = fs.mean(axis=0)
             train_means.append(_m)
             train_feat_centered.extend(fs - _m)
 
         print('computing precision matrix...')
-        ec = EmpiricalCovariance(assume_centered = True)
+        ec = EmpiricalCovariance(assume_centered=True)
         ec.fit(np.array(train_feat_centered).astype(np.float64))
 
         mean = np.array(train_means)
@@ -253,12 +257,12 @@ def evaluate_Relative_Mahalanobis(feature_id_train, feature_id_val, feature_ood,
         train_means_global = []
         train_feat_centered_global = []
 
-        _m_global = feature_id_train.mean(axis = 0)
+        _m_global = feature_id_train.mean(axis=0)
         train_means_global.append(_m_global)
         train_feat_centered_global.extend(feature_id_train - _m_global)
 
         print('computing precision matrix...')
-        ec_global = EmpiricalCovariance(assume_centered = True)
+        ec_global = EmpiricalCovariance(assume_centered=True)
         ec_global.fit(np.array(train_feat_centered_global).astype(np.float64))
 
         mean_global = np.array(train_means_global)
@@ -276,21 +280,21 @@ def evaluate_Relative_Mahalanobis(feature_id_train, feature_id_val, feature_ood,
             score_id_classwise = np.load(score_id_path_classwise)
         else:
             score_id_classwise = -np.array(
-                [(((f - mean) @ prec) * (f - mean)).sum(axis = -1).min().cpu().item() for f in
+                [(((f - mean) @ prec) * (f - mean)).sum(axis=-1).min().cpu().item() for f in
                  tqdm(torch.from_numpy(feature_id_val).cuda().double())])
             np.save(score_id_path_classwise, score_id_classwise)
         #
         score_id_global = -np.array(
-            [((((f - mean_global) @ prec_global) * (f - mean_global)).sum(axis = -1)).item() for f in
+            [((((f - mean_global) @ prec_global) * (f - mean_global)).sum(axis=-1)).item() for f in
              tqdm((feature_id_val))])  # tqdm(torch.from_numpy(feature_id_val).cuda().float())])
 
         score_id = score_id_classwise - score_id_global
         np.save(score_id_path, score_id)
 
-    score_ood_classwise = -np.array([(((f - mean) @ prec) * (f - mean)).sum(axis = -1).min().cpu().item() for f in
+    score_ood_classwise = -np.array([(((f - mean) @ prec) * (f - mean)).sum(axis=-1).min().cpu().item() for f in
                                      tqdm(torch.from_numpy(feature_ood).cuda().double())])
     score_ood_global = -np.array(
-        [((((f - mean_global) @ prec_global) * (f - mean_global)).sum(axis = -1)).item() for f in tqdm(feature_ood)])
+        [((((f - mean_global) @ prec_global) * (f - mean_global)).sum(axis=-1)).item() for f in tqdm(feature_ood)])
     score_ood = score_ood_classwise - score_ood_global
     return score_id, score_ood
 
@@ -315,19 +319,19 @@ def evaluate_KL_Matching(softmax_id_train, softmax_id_val, softmax_ood, path):
         mean_softmax_train = np.load(mean_softmax_train_path)
     else:
         print('not complete, computing classwise mean softmax...')
-        pred_labels_train = np.argmax(softmax_id_train, axis = -1)
+        pred_labels_train = np.argmax(softmax_id_train, axis=-1)
         mean_softmax_train = np.array(
-            [softmax_id_train[pred_labels_train == i].mean(axis = 0) for i in tqdm(range(1000))])
+            [softmax_id_train[pred_labels_train == i].mean(axis=0) for i in tqdm(range(1000))])
         np.save(mean_softmax_train_path, mean_softmax_train)
     if os.path.exists(score_id_KL_path):
         score_id = np.load(score_id_KL_path)
     else:
         print('not complete, Computing id score...')
-        score_id = -pairwise_distances_argmin_min(softmax_id_val, (mean_softmax_train), metric = kl)[1]
+        score_id = -pairwise_distances_argmin_min(softmax_id_val, (mean_softmax_train), metric=kl)[1]
         print('score_id is nan: ', np.isnan(score_id).any())
         np.save(score_id_KL_path, score_id)
     print('Computing OOD score...')
-    score_ood = -pairwise_distances_argmin_min(softmax_ood, (mean_softmax_train), metric = kl)[1]
+    score_ood = -pairwise_distances_argmin_min(softmax_ood, (mean_softmax_train), metric=kl)[1]
     return score_id, score_ood
 
 
@@ -372,13 +376,12 @@ def evaluate_Energy_React(feature_id_train, feature_id_val, feature_ood, w, b, p
         score_id = np.load(score_id_energy_react_path)
     else:
         print('not complete, Computing id score...')
-        logit_id_val_clip = np.clip(feature_id_val, a_min = None, a_max = clip) @ w.T + b
-        score_id = logsumexp(logit_id_val_clip, axis = -1)
+        logit_id_val_clip = np.clip(feature_id_val, a_min=None, a_max=clip) @ w.T + b
+        score_id = logsumexp(logit_id_val_clip, axis=-1)
         np.save(score_id_energy_react_path, score_id)
-    logit_ood_clip = np.clip(feature_ood, a_min = None, a_max = clip) @ w.T + b
-    score_ood = logsumexp(logit_ood_clip, axis = -1)
+    logit_ood_clip = np.clip(feature_ood, a_min=None, a_max=clip) @ w.T + b
+    score_ood = logsumexp(logit_ood_clip, axis=-1)
     return score_id, score_ood
-
 
 
 def evaluate_KNN(feature_id_train, feature_id_val, feature_ood, path):
@@ -399,11 +402,11 @@ def evaluate_KNN(feature_id_train, feature_id_val, feature_ood, path):
     score_ood (numpy.ndarray): KNN scores of OOD samples.
 
     """
-    normalizer = lambda x: x / np.linalg.norm(x, axis = -1, keepdims = True) + 1e-10
+    normalizer = lambda x: x / np.linalg.norm(x, axis=-1, keepdims=True) + 1e-10
     prepos_feat = lambda x: np.ascontiguousarray(normalizer(x))
 
     scores_id_path_knn = os.path.join(path, 'scores_id_knn.npy')
-    index_path = os.path.join(path,'trained.index')
+    index_path = os.path.join(path, 'trained.index')
 
     # compute neighbours
     K = 1000
@@ -411,7 +414,7 @@ def evaluate_KNN(feature_id_train, feature_id_val, feature_ood, path):
         index = faiss.read_index(index_path)
     else:
         print('Index not stored, creating index...')
-        feature_id_train_prepos=prepos_feat(feature_id_train)
+        feature_id_train_prepos = prepos_feat(feature_id_train)
         index = faiss.IndexFlatL2(feature_id_train_prepos.shape[1])
         index.add(feature_id_train_prepos)
         faiss.write_index(index, index_path)
@@ -459,16 +462,16 @@ def evaluate_cosine(feature_id_train, feature_id_val, feature_ood, train_labels,
         train_feat_centered = []
         for i in tqdm(range(1000)):
             fs = feature_id_train[train_labels == i]
-            _m = fs.mean(axis = 0)
+            _m = fs.mean(axis=0)
             train_means.append(_m)
             train_feat_centered.extend(fs - _m)
         mean = np.array(train_means)
         np.save(mean_path, mean)
     means_n = np.array([m / np.linalg.norm(m) for m in mean])
     features_id_normalized = np.array([m / np.linalg.norm(m) for m in feature_id_val])
-    score_id = (features_id_normalized @ means_n.T).max(axis = -1)
+    score_id = (features_id_normalized @ means_n.T).max(axis=-1)
     features_ood_normalized = np.array([m / np.linalg.norm(m) for m in feature_ood])
-    score_ood = (features_ood_normalized @ means_n.T).max(axis = -1)
+    score_ood = (features_ood_normalized @ means_n.T).max(axis=-1)
     return score_id, score_ood
 
 
@@ -499,7 +502,7 @@ def evaluate_rcos(feature_id_train, feature_id_val, feature_ood, train_labels, p
         train_feat_centered = []
         for i in tqdm(range(1000)):
             fs = feature_id_train[train_labels == i]
-            _m = fs.mean(axis = 0)
+            _m = fs.mean(axis=0)
             train_means.append(_m)
             train_feat_centered.extend(fs - _m)
         mean = np.array(train_means)
@@ -507,7 +510,7 @@ def evaluate_rcos(feature_id_train, feature_id_val, feature_ood, train_labels, p
 
     # use train means as encoded text pairs
     text_encoded = torch.from_numpy(mean).float()
-    text_encoded /= text_encoded.norm(dim = -1, keepdim = True)
+    text_encoded /= text_encoded.norm(dim=-1, keepdim=True)
 
     scores_id_path_clip = os.path.join(path, 'mcm_scores_id.npy')
     if os.path.exists(scores_id_path_clip):
@@ -516,21 +519,21 @@ def evaluate_rcos(feature_id_train, feature_id_val, feature_ood, train_labels, p
         print('Computing ID scores...')
 
         features_id = torch.from_numpy(feature_id_val).float()
-        features_id /= features_id.norm(dim = -1, keepdim = True)
+        features_id /= features_id.norm(dim=-1, keepdim=True)
 
         out_id = features_id @ text_encoded.T
-        smax_id = F.softmax(out_id / T, dim = 1).data.cpu().numpy()
-        score_id = np.max(smax_id, axis = 1)
+        smax_id = F.softmax(out_id / T, dim=1).data.cpu().numpy()
+        score_id = np.max(smax_id, axis=1)
 
         np.save(scores_id_path_clip, score_id)
     print('Computing OOD scores...')
 
     features_ood = torch.from_numpy(feature_ood).float()
-    features_ood /= features_ood.norm(dim = -1, keepdim = True)
+    features_ood /= features_ood.norm(dim=-1, keepdim=True)
 
     out_ood = features_ood @ text_encoded.T
-    smax_ood = F.softmax(out_ood / T, dim = 1).data.cpu().numpy()
-    score_ood = np.max(smax_ood, axis = 1)
+    smax_ood = F.softmax(out_ood / T, dim=1).data.cpu().numpy()
+    score_ood = np.max(smax_ood, axis=1)
     return score_id, score_ood
 
 
@@ -564,17 +567,17 @@ def evaluate_cosine_clip(feature_id_val, feature_ood, clip_labels, labels_encode
         x_val_id_encoded = np.array([m / np.linalg.norm(m) for m in feature_id_val])
         # feature_id_val / feature_id_val.norm(dim = -1, keepdim = True)
         similarity_id = (x_val_id_encoded @ text_encoded.T)
-        preds = np.argmax(similarity_id, axis = -1)
+        preds = np.argmax(similarity_id, axis=-1)
         val_acc = np.equal(preds, clip_labels).mean()
         np.save(acc_path, val_acc)
-        score_id = np.max(similarity_id, axis = -1)
+        score_id = np.max(similarity_id, axis=-1)
         np.save(scores_id_path_clip, score_id)
     print('Computing OOD scores...')
     x_ood_encoded = np.array([m / np.linalg.norm(m) for m in feature_ood])
     # feature_ood / feature_ood.norm(dim = -1, keepdim = True)
 
     similarity_ood = (x_ood_encoded @ text_encoded.T)
-    score_ood = np.max(similarity_ood, axis = -1)
+    score_ood = np.max(similarity_ood, axis=-1)
     return score_id, score_ood, val_acc
 
 
@@ -610,7 +613,7 @@ def evaluate_mcm_clip(feature_id_val, feature_ood, clip_labels, labels_encoded_c
         """
     T = 1.
     text_encoded = torch.from_numpy(labels_encoded_clip).float()
-    text_encoded /= text_encoded.norm(dim = -1, keepdim = True)
+    text_encoded /= text_encoded.norm(dim=-1, keepdim=True)
 
     scores_id_path_clip = os.path.join(path, 'mcm-clip_scores_id.npy')
     acc_path = os.path.join(path, 'accuracy.npy')
@@ -621,23 +624,23 @@ def evaluate_mcm_clip(feature_id_val, feature_ood, clip_labels, labels_encoded_c
         print('Computing ID scores...')
 
         features_id = torch.from_numpy(feature_id_val).float()
-        features_id /= features_id.norm(dim = -1, keepdim = True)
+        features_id /= features_id.norm(dim=-1, keepdim=True)
 
         out_id = features_id @ text_encoded.T
-        smax_id = F.softmax(out_id / T, dim = 1).data.cpu().numpy()
-        score_id = np.max(smax_id, axis = 1)
+        smax_id = F.softmax(out_id / T, dim=1).data.cpu().numpy()
+        score_id = np.max(smax_id, axis=1)
 
-        preds = np.argmax(out_id.data.cpu().numpy(), axis = -1)
+        preds = np.argmax(out_id.data.cpu().numpy(), axis=-1)
         val_acc = np.equal(preds, clip_labels).mean()
         np.save(acc_path, val_acc)
         np.save(scores_id_path_clip, score_id)
     print('Computing OOD scores...')
 
     features_ood = torch.from_numpy(feature_ood).float()
-    features_ood /= features_ood.norm(dim = -1, keepdim = True)
+    features_ood /= features_ood.norm(dim=-1, keepdim=True)
 
     out_ood = features_ood @ text_encoded.T
-    smax_ood = F.softmax(out_ood / T, dim = 1).data.cpu().numpy()
-    score_ood = np.max(smax_ood, axis = 1)
+    smax_ood = F.softmax(out_ood / T, dim=1).data.cpu().numpy()
+    score_ood = np.max(smax_ood, axis=1)
 
     return score_id, score_ood, val_acc

@@ -3,7 +3,7 @@
 
 **Julian Bitterwolf\*, Maximilian Müller\*, Matthias Hein**
 
-**University of Tübingen**
+**University of Tübingen**  
 **Tübingen AI Center**
 
 \*Equal contribution

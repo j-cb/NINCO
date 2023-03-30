@@ -1,17 +1,21 @@
 # Code for the **NINCO** OOD dataset introduced in
-# In or Out? Fixing ImageNet Out-of-Distribution Detection Evaluation
+# [In or Out? Fixing ImageNet Out-of-Distribution Detection Evaluation](https://arxiv.org/abs/XXXX.XXXXX)
 
-**Anonymous**
+**Julian Bitterwolf\*, Maximilian Müller\*, Matthias Hein**
 
-**Anonymous Institution**
+**University of Tübingen**
+
+\*Equal contribution
+
+**[https://arxiv.org/abs/XXXX.XXXXX](https://arxiv.org/abs/XXXX.XXXXX)**
+
+**Note: This is not the final version yet. Particularly the NINCO_popular_datasets_subsamples dataset will soon receive updates to include another five cleaned datasets.**
 
 ### Paper abstract
 
 Out-of-distribution (OOD) detection is the problem of identifying inputs which are unrelated to the in-distribution task. The OOD detection performance when the in-distribution (ID) is ImageNet-1K is commonly being tested on a small range of test OOD datasets. We find that most of the currently used test OOD datasets have severe issues, in some cases more than 50\% of the dataset contains objects belonging to one of the ID classes.
 These erroneous samples heavily distort the evaluation of OOD detectors. As a solution, we introduce with NINCO a novel test OOD dataset, each sample checked to be ID free, which with its fine-grained range of OOD classes allows for a detailed analysis of an OOD detector’s strengths and failure modes, particularly when paired with a number of synthetic “OOD unit-tests”.
 We provide detailed evaluations across a large set of architectures and OOD detection methods on NINCO and the unit-tests, revealing new insights about model weaknesses and the effects of pretraining on OOD detection performance.
-
-**Note: This is not the final version yet. Particularly the NINCO_popular_datasets_subsamples dataset will soon receive updates to include another five cleaned datasets.**
 
 ## The NINCO dataset
 

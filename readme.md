@@ -79,19 +79,19 @@ Example methods for examining results of such evaluations are shown in `analyze_
 When using **NINCO**, please consider citing (besides this paper) the following data sources that were used to create NINCO:
 
 ```
-Hendrycks et al.: "Scaling out-of-distribution detection for real-world settings", ICML, 2022.
-Bossard et al.: Food-101 – mining discriminative components with random forests", ECCV 2014.
-Zhou et al.: "Places: A 10 million image database for scene recognition", IEEE PAMI 2017.
-Huang et al.: "Mos: Towards scaling out-of-distribution detection for large semantic space", CVPR 2021.
-The iNaturalist project: https://www.inaturalist.org/
+Hendrycks et al.: "Scaling out-of-distribution detection for real-world settings", ICML, 2022.  
+Bossard et al.: Food-101 – mining discriminative components with random forests", ECCV 2014.  
+Zhou et al.: "Places: A 10 million image database for scene recognition", IEEE PAMI 2017.  
+Huang et al.: "Mos: Towards scaling out-of-distribution detection for large semantic space", CVPR 2021.  
+The iNaturalist project: https://www.inaturalist.org/  
 ```
 
 When using **NINCO_popular_datasets_subsamples**, additionally to the above, please consider citing:
 
 ```
-Cimpoi et al.: "Describing textures in the wild", CVPR 2014.
-Hendrycks et al.: "Natural adversarial examples", CVPR 2021.
-Wang et al.: "Vim: Out-of-distribution with virtual-logit matching", CVPR 2022.
+Cimpoi et al.: "Describing textures in the wild", CVPR 2014.  
+Hendrycks et al.: "Natural adversarial examples", CVPR 2021.  
+Wang et al.: "Vim: Out-of-distribution with virtual-logit matching", CVPR 2022.  
 ```
 
 For citing our paper, we would appreciate using the following bibtex entry:

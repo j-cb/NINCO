@@ -326,20 +326,22 @@ parser.add_argument('--batch_size', type=int, default=128)
 def main():
     args = parser.parse_args()
     torch.hub.set_dir(args.path_to_weights)#
-    if args.dataset.endswith('.csv'):
-        pass
-        # dataset_df = pd.read_csv(args.dataset)
-        # OOD_classes = dataset_df.classes.unique()
-    else:
-        OOD_classes = getattr(utils, f'{args.dataset}_class_names')
+    # if args.dataset.endswith('.csv'):
+    #     pass
+    #     # dataset_df = pd.read_csv(args.dataset)
+    #     # OOD_classes = dataset_df.classes.unique()
+    # else:
+    #     OOD_classes = getattr(utils, f'{args.dataset}_class_names')
     task = OODScore(path_to_cache=args.path_to_cache, path_to_imagenet=args.path_to_imagenet)
-    methods = task.methods if args.method == 'all' else [args.method]
+    methods = task.methods if args.method == 'all' else (['mcm-clip', 'cosine-clip'] if args.method=='all-clip' else[args.method])
     need_train_outputs = any([methods_train_usage[m] for m in methods])  # raises KeyError if a method is not available
     # timm models
     if args.model_name == 'models_timm_dev':
         model_names = models_timm_dev
     elif args.model_name == 'models_timm_0_6_12':
         model_names = models_timm_0_6_12
+    elif args.model_name=='models_clip':
+        model_names=list(models_clip.keys())
     else:
         model_names = [args.model_name]
     for model_name in model_names:
@@ -352,8 +354,8 @@ def main():
             print('Task is set up.')
             task.get_features_and_logits(model, ood=True, train=need_train_outputs,
                                          overwrite=args.overwrite_model_outputs)
-            if args.dataset.endswith('.csv'):
-                OOD_classes = task.dataset_out.classes
+            #if args.dataset.endswith('.csv'):
+            OOD_classes = task.dataset_out.classes
             task.evaluate(model, OOD_classes=OOD_classes, methods=methods)
         # CLIP zero shot models
         elif model_name in models_clip.keys():

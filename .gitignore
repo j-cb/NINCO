@@ -4,6 +4,7 @@ data/paths_config.py #a generic example can be included on github
 data/cleaning_annotations/anonymize_annotations.ipynb
 data/cleaning_annotations/handmade_annotations
 data/cleaning_annotations/subsampled_dataset_annotations
+data/NINCO_OOD_classes_ICML.csv
 cache/**/*.npy
 cache/**/*.npz
 data/paths_config_local.py

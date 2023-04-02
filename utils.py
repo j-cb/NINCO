@@ -126,7 +126,7 @@ def extract_features(model, daatset, savepath, wo_head=False):
 
         # if not, save create dataloader and save features
         # if True: #not complete:
-        #complete = False
+        complete = False
         if not complete:
             print('Extracting features set ', i)
             index_slices[i] = range(i * slice_length, min((i + 1) * slice_length, len(daatset)))

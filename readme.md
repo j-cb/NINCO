@@ -19,7 +19,7 @@ We provide detailed evaluations across a large set of architectures and OOD dete
 
 ## The NINCO dataset
 
-The **NINCO** (**N**o **I**mageNet **C**lass **O**bjects) dataset consists of 46 OOD classes with a total of 4293 samples.
+The **NINCO** (**N**o **I**mageNet **C**lass **O**bjects) dataset consists of 64 OOD classes with a total of 5879 samples.
 The OOD classes were selected to have no categorical overlap with any classes of ImageNet-1K.
 Then we inspected each sample individually to not contain ID objects.
 

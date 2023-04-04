@@ -33,6 +33,13 @@ OOD class that were included in the cleaned datasets.
 ![NINCO_difficult_wide_nocaption.png](readme_images/NINCO_difficult_wide_nocaption.png)
 Examples from <span style="color:#BF008C"> NINCO OOD classes </span> (first row) and from the <span style="color:blue">ImageNet-1K class</span> (second row) which the <span style="color:BF008C"> OOD class </span> is most frequently confused for.
 
+
+## Cleaned Popular Datasets and OOD Unit Tests
+
+Besides NINCO, we provide (in the same .tar.gz file) truly OOD versions of 11 popular OOD datasets with in total 2715 OOD samples.
+
+Further included are 17 OOD unit-tests, for which 400 samples each are also included in the download. You can replicate or modify the unit-tests by following  [`create_unit_test_data.ipynb`](create_unit_test_data.ipynb) or using [`noise_functions.py`](noise_functions.py).
+
 ---
 
 # **Using this repository**:
@@ -69,7 +76,7 @@ For example, the ViT-B-384-21k with MSP can be evaluated on the NINCO OOD classe
 
 For other datasets, use `--dataset NINCO_popular_datasets_subsamples`, `--dataset NINCO_OOD_unit_tests`, or `--dataset file_list.csv` where `file_list.csv` has a header row, one column containing the image locations and an optional second column with labels, e.g. as in `data/NINCO_OOD_classes.csv`.
 
-Specifying `--method all` evaluates all methods, but takes considerable time since it requires a forward pass over the whole ImageNet train set.
+Specifying `--method all` evaluates all methods, but takes considerable time since on a model's first run it requires a forward pass over the whole ImageNet-1K train set.
 
 Example methods for examining results of such evaluations are shown in `analyze_evaluations.ipynb`.
 

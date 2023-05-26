@@ -371,8 +371,8 @@ def main():
             print('Task is set up.')
             task.get_features_clip(model, ood=True, val=True, train=need_train_outputs,
                                    overwrite=args.overwrite_model_outputs)
-            if args.dataset.endswith('.csv'):
-                OOD_classes = task.dataset_out.classes
+            #if args.dataset.endswith('.csv'):
+            OOD_classes = task.dataset_out.classes
             task.evaluate(model, OOD_classes=OOD_classes, methods=methods)
         else:
             raise NotImplementedError(

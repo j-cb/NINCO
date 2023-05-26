@@ -103,7 +103,7 @@ def all_equal(iterable):
     return next(g, True) and not next(g, False)
 
 
-def extract_features(model, daatset, savepath, wo_head=False):
+def extract_features(model, dataset, savepath, wo_head=False):
     torch.backends.cudnn.benchmark = True
     # save
     if not os.path.exists(savepath):

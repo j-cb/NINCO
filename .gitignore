@@ -18,3 +18,5 @@ readme_public.md
 analyze_evaluations-max.ipynb
 .idea/
 model_weights/
+*local*
+readme_anonymous.md

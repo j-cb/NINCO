@@ -1,5 +1,5 @@
 # Code for the **NINCO** OOD dataset introduced in
-# [In or Out? Fixing ImageNet Out-of-Distribution Detection Evaluation](https://arxiv.org/abs/XXXX.XXXXX)
+# [In or Out? Fixing ImageNet Out-of-Distribution Detection Evaluation](https://arxiv.org/abs/2306.00826)
 
 **Julian Bitterwolf\*, Maximilian Müller\*, Matthias Hein**
 
@@ -8,7 +8,7 @@
 
 \*Equal contribution
 
-Paper: [https://arxiv.org/abs/XXXX.XXXXX](https://arxiv.org/abs/XXXX.XXXXX)  
+Paper: [https://arxiv.org/abs/2306.00826](https://arxiv.org/abs/2306.00826)  
 Dataset download: [https://drive.google.com/file/d/1lGH9aWDZLGpniqs4JHkgM0Yy4_DsQ0rx/view](https://drive.google.com/file/d/1lGH9aWDZLGpniqs4JHkgM0Yy4_DsQ0rx/view)
 
 ## Paper abstract

@@ -112,7 +112,7 @@ def extract_features(model, dataset, savepath, wo_head=False):
 
     # slice dataloaders in train
     slice_length = 50000
-    n_slices = -((-len(daatset)) // slice_length)
+    n_slices = -((-len(dataset)) // slice_length)
     index_slices = {}
     slice_datasets = {}
 
@@ -129,10 +129,10 @@ def extract_features(model, dataset, savepath, wo_head=False):
         complete = False
         if not complete:
             print('Extracting features set ', i)
-            index_slices[i] = range(i * slice_length, min((i + 1) * slice_length, len(daatset)))
-            slice_datasets[i] = torch.utils.data.Subset(daatset, index_slices[i])
+            index_slices[i] = range(i * slice_length, min((i + 1) * slice_length, len(dataset)))
+            slice_datasets[i] = torch.utils.data.Subset(dataset, index_slices[i])
             slice_datasets[i].__name__ = f'slice{index_slices[i].start}_to_{index_slices[i].stop}'
-            slice_datasets[i].classes = daatset.classes
+            slice_datasets[i].classes = dataset.classes
             dataloader = torch.utils.data.DataLoader(slice_datasets[i], batch_size=model.batch_size)
 
             features = []

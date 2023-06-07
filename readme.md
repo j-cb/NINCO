@@ -9,7 +9,8 @@
 \*Equal contribution
 
 Paper: [https://arxiv.org/abs/2306.00826](https://arxiv.org/abs/2306.00826)  
-Dataset download: [https://drive.google.com/file/d/1lGH9aWDZLGpniqs4JHkgM0Yy4_DsQ0rx/view](https://drive.google.com/file/d/1lGH9aWDZLGpniqs4JHkgM0Yy4_DsQ0rx/view)
+NINCO dataset direct download: [https://zenodo.org/record/8013288/files/NINCO_all.tar.gz?download=1](https://zenodo.org/record/8013288/files/NINCO_all.tar.gz?download=1)  
+NINCO Zenodo page: [https://zenodo.org/record/8013288](https://zenodo.org/record/8013288)
 
 ## Paper abstract
 
@@ -59,7 +60,10 @@ Five jupyter notebooks can in the current version be used as tutorials for the r
 ---
 
 ## NINCO dataset download 
-[To evaluate models and view the NINCO images, please download and extract the dataset contained in this tar.gz file.](https://drive.google.com/file/d/1lGH9aWDZLGpniqs4JHkgM0Yy4_DsQ0rx/view?usp=share_link)
+
+[To evaluate models and view the NINCO images, please download and extract the dataset contained in this tar.gz file.](https://zenodo.org/record/8013288/files/NINCO_all.tar.gz?download=1)
+
+[Google Drive mirror.](https://drive.google.com/file/d/1lGH9aWDZLGpniqs4JHkgM0Yy4_DsQ0rx/view?usp=share_link)
 
 --- 
 
@@ -106,7 +110,7 @@ Wang et al.: ”Partial and Asymmetric Contrastive Learning for Out-of-Distribut
 Galil et al.: “A framework for benchmarking Class-out-of-distribution detection and its application to ImageNet”, ICLR 2023.  
 ```
 
-For citing our paper, we would appreciate using the following bibtex entry:
+For citing our paper, we would appreciate using the following bibtex entry (this will be updated once the ICML 2023 proceedings are public):
 
 ```
 @inproceedings{

@@ -117,8 +117,8 @@ For citing our paper, we would appreciate using the following bibtex entry (this
 bitterwolf2023ninco,
 title={In or Out? Fixing ImageNet Out-of-Distribution Detection Evaluation},
 author={Julian Bitterwolf and Maximilian Mueller and Matthias Hein},
-booktitle={ICLR 2023 Workshop on Pitfalls of limited data and computation for Trustworthy ML},
+booktitle={ICML},
 year={2023},
-url={https://openreview.net/forum?id=8K6FMDyBs2}
+url={https://proceedings.mlr.press/v202/bitterwolf23a.html}
 }
 ```
